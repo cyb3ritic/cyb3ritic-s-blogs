@@ -182,13 +182,6 @@ declare module 'astro:content' {
   collection: "posts";
   data: InferEntrySchema<"posts">
 } & { render(): Render[".md"] };
-"notes/git_cli_beginners_notes.md": {
-	id: "notes/git_cli_beginners_notes.md";
-  slug: "notes/git_cli_beginners_notes";
-  body: string;
-  collection: "posts";
-  data: InferEntrySchema<"posts">
-} & { render(): Render[".md"] };
 "thm/blue.md": {
 	id: "thm/blue.md";
   slug: "thm/blue";
