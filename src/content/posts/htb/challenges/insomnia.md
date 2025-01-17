@@ -2,7 +2,7 @@
 title: Insomnia
 published: 2024-08-05
 description: Writeup for an easy labeled HTB Web challenge named Insomnia.
-image: https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/web_challenges/insomnia/insomnia_theme.gif
+image: ./insomnia/insomnia_theme.gif
 tags: [HackTheBox, Linux, Challenges]
 category: Writeups
 draft: false
@@ -15,7 +15,7 @@ draft: false
 Hello everyone, This is the writeup for Insomnia, an easy labeled web challenege. So, let's solve this challenge together.
 
 First let's start the instance and download the necessary files. Now we can access the page in our browser. The first thing I wanted was to check the source page, so I inspected the wep page.
-![inspecting insomnia](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/web_challenges/insomnia/inspecting_insomnia.jpg)
+![inspecting insomnia](./insomnia/inspecting_insomnia.jpg)
 
 - we can see three active clickable links, home, signin and signup.
 
@@ -64,24 +64,24 @@ class ProfileController extends BaseController
 So my plan was to create a test account and then modify the payload cookie with name parameter as administrator. But I cannot by pass the jwt request since it is being decoded with a 32 bit Hex randblob key. So, need to think a different method.
 
 let's see how a user is being authenticated. For this lets see the app/Controllers/UserController.php,
-![logic_vulnerability](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/web_challenges/insomnia/logic_vulnerability.jpg)
+![logic_vulnerability](./insomnia/logic_vulnerability.jpg)
 
 - Here we can see is the developer is not checking for password, it is only checking if the query ig fetching the result or not.
 
 So what I did next was I created a test account with credentials carlos:carlos and logged in. I also intercepted the request in burp and checked for the response. For carlos:carlos I got a token with login successful status 200 response.
-![response wit password](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/web_challenges/insomnia/with_password_response.jpg)
+![response wit password](./insomnia/with_password_response.jpg)
 
 Then I removed teh password field and sent the request again. I still got the login successful response with a token for carlos username.
-![response without password](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/web_challenges/insomnia/without_password_response.jpg)
+![response without password](./insomnia/without_password_response.jpg)
 
 So What i did next was I reloggedin to carlos account and after intercepting the request, this time,  I removed password field and edited the username to 'administrator' and forwarded the request.
-![editing request](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/web_challenges/insomnia/editing_request.jpg)
+![editing request](./insomnia/editing_request.jpg)
 
 <strong>And voilà, I was logged in as administrator and got the flag.</strong>
 
-![flag](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/web_challenges/insomnia/result.jpg)
+![flag](./insomnia/result.jpg)
 
 Thankyou for reading this writeup. I hope it was interesting and informative. See you soon :)
 
-![insomnia pwned](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/htb/web_challenges/insomnia/insomnia_pwned.jpg)
+![insomnia pwned](./insomnia/insomnia_pwned.jpg)
     
