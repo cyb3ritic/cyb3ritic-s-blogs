@@ -2,7 +2,7 @@
 title: Vulnversity
 published: 2024-08-22
 description: Walkthrough for an easy labeled THM Room named Vulnversity.
-image: ./vulnversity/vulnversity_logo.png
+image: https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/vulnversity/vulnversity_logo.png
 tags: [TryHackMe, Linux, Room]
 category: Walkthrough
 draft: false
@@ -10,7 +10,7 @@ draft: false
 
 # <center>Vulnversity</center>
 
-Hello every one. Today we'll solve an easy room on Try Hack Me. I'll be guiding you through each task given in the room. lettuce begin.
+Hello everyone. Today we'll solve an easy room on Try Hack Me. I'll be guiding you through each task given in the room. lettuce begin.
 
 ## Task 1 : Deploy the machine
 Just click on `Start Machine` button presented in this task. This shall get your server running. You'll get the ip address in a minute. Then connect to Try Hack Me vpn and try to ping the ip address to check if you can successfull access the server.
@@ -131,7 +131,7 @@ Nmap done: 1 IP address (1 host up) scanned in 4.13 seconds
 |_http-server-header: Apache/2.4.18 (Ubuntu)
 ```
 - An Apache http daemon is running on port 3333. Thus webserver must be running on port 3333. We can also check it on our browser.
-![webpage](./vulnversity/webpage.png)
+![webpage](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/vulnversity/webpage.png)
 - **Ans: `3333`**
 
 **Q6. What is the flag for enabling verbose mode using Nmap?**
@@ -186,7 +186,7 @@ Finished
 ```
 **Q1. What is the directory that has an upload form page?**
 - we discovered 4 directories namely /images, /css, /js, /internal. After manually visiting these directories, we can find an upload form in /internal directory.
-![uplopad form](./vulnversity/upload_form.png)
+![uplopad form](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/vulnversity/upload_form.png)
 
 - **Ans: `/internal/`**
 
@@ -396,7 +396,7 @@ function printit ($string) {
 - this time let's capture the request using burp and send the reverse shell using above extensions one by one using intruder.
 - After the attact, our reverse shell was succesfully uploaded with extension .phtml. Now let's run our netcat listener `nc -lnvp 1234` and then try to access and execute the reverse shell.
 - going to /internal/uploads/revshell.phtml executes our reverse shell and we get a shell on our netcat listener.
-![user flag](./vulnversity/user_flag.png)
+![user flag](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/vulnversity/user_flag.png)
 
 **Q1. What common file type you'd want to upload to exploit the server is blocked? Try a couple to find out.**
 
@@ -421,7 +421,7 @@ Now that you have compromised this machine, we will escalate our privileges and 
 In Linux, SUID (set owner userId upon execution) is a particular type of file permission given to a file. SUID gives temporary permissions to a user to run the program/file with the permission of the file owner (rather than the user who runs it).
 
 For example, the binary file to change your password has the SUID bit set on it (`/usr/bin/passwd`). This is because to change your password, you will need to write to the shadowers file that you do not have access to; `root` does, so it has root privileges to make the right changes.
-![suid](./vulnversity/suid.jpeg)
+![suid](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/vulnversity/suid.jpeg)
 
 - Till here we know that we are supposed to do something with suid bits. So let's first check all the files that has SUID bit set.
 
@@ -435,7 +435,7 @@ find / -perm -u=s -type f 2>/dev/null
 - -tppe f : only searchfor files
 - 2> /dev/null : supresses errors.
 
-![files with suid bit set](./vulnversity/files_with_suid.png)
+![files with suid bit set](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/vulnversity/files_with_suid.png)
 
 Aere an interesting file caught my eye, `/bin/systemctl` because Systemctl is the command-line tool that manages the systemd system and service manager in Linux. It lets users control and manage system services and units with commands to start, stop, restart, and check their status.
 
@@ -454,7 +454,7 @@ WantedBy=multi-user.target' > $TF
 ./systemctl enable --now $TF
 ```
 This code snipped runs the shell with root previlege and stores the id to /tmp/output directory. Let's chech it on our target machine.
-![privilege escalation](./vulnversity/priv_esc.png)
+![privilege escalation](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/vulnversity/priv_esc.png)
 
 Here we can see that we escalated teh privilege by abusing SUID and ran `id` command.
 
@@ -470,7 +470,7 @@ WantedBy=multi-user.target' > $TF
 ./systemctl link $TF
 ./systemctl enable --now $TF
 ```
-![root flag](./vulnversity/root_flag.png)
+![root flag](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/vulnversity/root_flag.png)
 
 And Voilà, we got the root flag.
 

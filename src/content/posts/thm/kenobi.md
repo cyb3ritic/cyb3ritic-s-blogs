@@ -2,7 +2,7 @@
 title: kenobi
 published: 2024-08-30
 description: Walkthrough for an easy labeled THM Room named Kenobi.
-image: ./kenobi/kenobi_logo.png
+image: https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/kenobi/kenobi_logo.png
 tags: [TryHackMe, Linux, Room]
 category: Walkthrough
 draft: false
@@ -44,7 +44,7 @@ Nmap done: 1 IP address (1 host up) scanned in 16.51 seconds
 
 ## Task 2 : Enumerating Samba for shares 
 
-![samba](./kenobi/samba.png)
+![samba](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/kenobi/samba.png)
 Samba is the standard Windows interoperability suite of programs for Linux and Unix. It allows end users to access and use files, printers and other commonly shared resources on a companies intranet or internet. Its often referred to as a network file system.
 
 Samba is based on the common client/server protocol of Server Message Block (SMB). SMB is developed only for Windows, without Samba, other computer platforms would be isolated from Windows machines, even if they were part of the same network.
@@ -626,13 +626,13 @@ uid=1000(kenobi) gid=1000(kenobi) groups=1000(kenobi),4(adm),24(cdrom),27(sudo),
 ```
 
 **Q4. What is Kenobi's user flag (/home/kenobi/user.txt)?**
-![user flag](./kenobi/user_flag.png)
+![user flag](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/kenobi/user_flag.png)
 **Ans: `d0b0f3f53b6caa532a83915e19224899`**
 
 
 ## Task 4 : Privilege Escalation with path variable manipulation
 
-![SUID](./kenobi/SUID.png)
+![SUID](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/kenobi/SUID.png)
 
 Lets first understand what what SUID, SGID and Sticky Bits are.
 
@@ -647,7 +647,7 @@ SUID bits can be dangerous, some binaries such as passwd need to be run with ele
 
 To search the a system for these type of files run the following: `find / -perm -u=s -type f 2>/dev/null`
 
-![suid bit enabled files](./kenobi/suid_enabled.png)
+![suid bit enabled files](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/kenobi/suid_enabled.png)
 
 **Q1. What file looks particularly out of the ordinary?** 
 ```text
@@ -670,7 +670,7 @@ kenobi@kenobi:~$ menu
 **Ans: `3`**
 
 Strings is a command on Linux that looks for human readable strings on a binary.
-![disecting menu binary](./kenobi/disect_binary.png)
+![disecting menu binary](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/kenobi/disect_binary.png)
 
 This shows us the binary is running without a full path (e.g. not using /usr/bin/curl or /usr/bin/uname).
 
@@ -695,8 +695,8 @@ uid=0(root) gid=1000(kenobi) groups=1000(kenobi),4(adm),24(cdrom),27(sudo),30(di
 ```
 
 So we are root. Now we can simply grab the root flag by traversing to root directory.
-![root flag](./kenobi/root_flag.png)
+![root flag](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/kenobi/root_flag.png)
 
 We have successfully solved this room and answered all the questions. Hope you all enjoyed it. Stay tuned. `:-)`
 
-![kenobi solved gif](./kenobi/kenobi_solved.gif)
+![kenobi solved gif](https://raw.githubusercontent.com/cyb3ritic/images/refs/heads/master/thm/kenobi/kenobi_solved.gif)
